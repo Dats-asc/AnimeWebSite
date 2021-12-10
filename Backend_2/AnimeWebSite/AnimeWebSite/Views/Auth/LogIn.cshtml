@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+   <head>
+       <link href="~/css/Styles.css" rel="stylesheet" type="text/css"/>
+       <meta charset="UTF-8">
+       <title>ClownS</title>
+       <link rel="shortcut icon" href="">
+   </head>
+
+<body>
+<section class="login_main">
+    <div class="container">
+        <form  asp-action="Registration">
+            <div class="page_for_enter">
+                <div class="enter_to_account">Войти в аккаунт</div>
+                <div class="log_fields">
+                    <input class="login_field" type="text" placeholder="Логин">
+                    <input class="password_field" type="password" placeholder="Пароль">
+                </div>
+                <div class="btns">
+                    <button class="enter">
+                        <a class="djfv" asp-controller="Auth" asp-action="Login"></a>
+                    </button>
+                    <button class="register">
+                        <a class="djfv" asp-controller="Auth" asp-action="Auth">Зарегистрироваться</a>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

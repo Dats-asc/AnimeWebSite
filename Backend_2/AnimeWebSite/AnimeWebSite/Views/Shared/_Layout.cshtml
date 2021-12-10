@@ -1,0 +1,31 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="@Url.Content("~/css/Styles.css")"/>
+    <meta charset="UTF-8">
+    <title>AnimeWebSite</title>
+    <link rel="shortcut icon" href="pics/favicon.png">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="nav">
+            <ul class="menu">
+                <li><a href="#">Профиль</a></li>
+                <li><a href="#">Форум</a></li>
+                <li><a href="#">Тайтлы</a></li>
+            </ul>
+                    
+            <input class="top_search" type="text"> 
+        </div>
+    </div>
+</header>
+@RenderBody()
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
