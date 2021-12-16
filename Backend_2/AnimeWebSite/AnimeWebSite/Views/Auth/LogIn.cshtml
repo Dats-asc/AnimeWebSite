@@ -12,7 +12,7 @@
 <body>
 <section class="login_main">
     <div class="container">
-        <form  asp-action="Registration" asp-controller="Auth" asp-antiforgery="true">
+        <form  asp-action="Login" asp-controller="Auth" asp-antiforgery="true">
             <div class="page_for_enter">
                 <div class="enter_to_account">Войти в аккаунт</div>
                 <div class="validation" asp-validation-summary="ModelOnly"></div>
@@ -21,10 +21,9 @@
                     <input class="password_field" type="password" placeholder="Пароль" asp-for="Password">
                 </div>
                 <div class="btns">
-                    <button type="submit" class="enter">
-                    </button>
+                    <button type="submit" class="enter">Submit</button>
                     <button class="register">
-                        <a class="djfv" asp-controller="Auth" asp-action="Auth">Зарегистрироваться</a>
+                        <a class="djfv" asp-controller="Auth" asp-action="Login">Зарегистрироваться</a>
                     </button>
                 </div>
             </div>
