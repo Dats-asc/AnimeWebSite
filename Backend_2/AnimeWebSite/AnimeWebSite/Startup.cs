@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using AnimeWebApp;
 using AnimeWebSite.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,18 +31,45 @@ namespace AnimeWebSite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddScoped<DBConnection>(x => new DBConnection(Configuration.GetConnectionString("DbConnection")));
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-            //var authOptions = Configuration.GetSection("Auth");
-            //services.Configure<AuthOptions>(authOptions);
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                    {
+                        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                        options.LogoutPath = new Microsoft.AspNetCore.Http.PathString("/Account/Logout");
+                        options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/Index");
+                        options.ExpireTimeSpan = System.TimeSpan.FromDays(2);
+                    }
+                );
+            
+            var tokenKey = Configuration.GetValue<string>("TokenKey");
+            var key = Encoding.ASCII.GetBytes(tokenKey);
 
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder =>
+            services.AddAuthentication(x =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
                 });
-            });
+
+            services.AddSingleton<IJWTAuthenticationManager>(new JWTAuthenticationManager(tokenKey));
+            
+            
+            
             
             services.AddControllersWithViews();
 

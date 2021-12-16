@@ -1,4 +1,5 @@
-﻿
+﻿@model AnimeWebSite.Models.Registration
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,17 +10,20 @@
 </head>
 
 <body>
-<form asp-controller="Auth" asp-action="Registration">
+<form asp-controller="Auth" asp-action="Registration" asp-antiforgery="true">
     <section class="login_main">
         <div class="container">
             <div class="page_for_enter">
                 <div class="enter_to_account">Создать аккаунт</div>
                 <div class="log_fields">
-                    <input class="login_field" type="text" placeholder="Логин*">
-                    <input class="password_field" type="password" placeholder="Пароль*">
+                    <div class="validation" asp-validation-summary="ModelOnly"></div>
+                    <input class="login_field" type="text" placeholder="Логин*" asp-for="Email">
+                    <input class="password_field" type="text" placeholder="Имя пользователя*" asp-for="Nickname">
+                    <input class="password_field" type="password" placeholder="Пароль*" asp-for="Password">
+                    <input class="password_field" type="password" placeholder="Подтвердить пароль*" asp-for="ConfirmPassword">
                 </div>
                 <div class="btns">
-                    <button class="register_1">Зарегистрироваться</button>
+                    <button type="submit" class="register_1">Зарегистрироваться</button>
                 </div>
             </div>
         </div>
