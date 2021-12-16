@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using AnimeWebApp;
+using AnimeWebApplication.Models;
 using AnimeWebSite.Hashing;
 using AnimeWebSite.Models;
 using AnimeWebSite.Options;
@@ -28,13 +29,27 @@ namespace AnimeWebSite.Controllers
         [HttpGet]
         public IActionResult Auth()
         {
-            return View();
+            if (Request.Cookies["token"] != null)
+            {
+                return Redirect("/home/index");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         [HttpGet]
         public IActionResult LogIn()
         {
-            return View();
+            if (Request.Cookies["token"] != null)
+            {
+                return Redirect("/home/index");
+            }
+            else
+            {
+                return View();
+            }
         }
         
         [HttpPost]
@@ -55,8 +70,13 @@ namespace AnimeWebSite.Controllers
                      };
                      var token = jWTAuthenticationManager.Authenticate(newUser);
                      Response.Cookies.Append("token", token);
-                     
+
+                     var newProfile = new Profile()
+                     {
+                         Id = newUser.UserId
+                     };
                      _db.Users.Add(newUser);
+                     _db.Profiles.Add(newProfile);
                      _db.SaveChanges();
 
                      return Redirect("/home/index");
@@ -77,7 +97,6 @@ namespace AnimeWebSite.Controllers
         [HttpPost]
          public IActionResult Login([FromForm]Autithication autithication)
          {
-
              var currentUser = _db.Users.FirstOrDefault(u => u.Email == autithication.Email 
                                                              && u.Password == Hasher.Encrypt(autithication.Password));
 
@@ -100,6 +119,15 @@ namespace AnimeWebSite.Controllers
              }
              
              return Redirect("/home/index");
+         }
+
+         public RedirectToActionResult Logout()
+         {
+             var token = Request.Cookies["token"];
+             if (token == null)
+                 return RedirectToAction("Login", "Auth");
+             Response.Cookies.Delete("token");
+             return RedirectToAction("Index", "Home");
          }
     }
 }

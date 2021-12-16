@@ -17,20 +17,27 @@ namespace AnimeWebSite.Controllers
         private readonly ILogger<HomeController> _logger;
         private ApplicationDbContext _db;
         private readonly IJWTAuthenticationManager jWTAuthenticationManager;
-        private Tools.Tools Tools;
+        private Tools.Tools _tools;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IJWTAuthenticationManager jWTAuthenticationManager)
         {
             _logger = logger;
             _db = context;
             this.jWTAuthenticationManager = jWTAuthenticationManager;
-            Tools = new Tools.Tools(context, jWTAuthenticationManager);
+            _tools = new Tools.Tools(context, jWTAuthenticationManager);
         }
 
         public IActionResult Index()
         {
-            var user = Tools.FindUserByToken(Request); 
-            return View(user);
+            if (Request.Cookies["token"] != null)
+            {
+                var user = _tools.FindUserByToken(Request);
+                return View(user);
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult Privacy()
