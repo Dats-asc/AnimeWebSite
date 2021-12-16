@@ -34,24 +34,25 @@ namespace AnimeWebSite.Controllers
 
         public IActionResult UserProfile()
         {
-            var currentUser = _tools.FindUserByToken(Request);
-            var currentProfile = _db.Profiles.FirstOrDefault(profile => profile.Id == currentUser.UserId);
-            var profileModel = new ProfileModel()
+            if (Request.Cookies["token"] == null)
             {
-                Email = currentUser.Email,
-                Nickname = currentUser.Nickname,
-                Birthday = currentProfile.Birthday,
-                City = currentProfile.City,
-                Description = currentProfile.Description,
-                PhotoPath = currentProfile.PhotoPath
-            };
-            return View(profileModel);
-        }
-
-        
-        public JsonResult TestHandler()
-        {
-            return new JsonResult("ok");
+                return Redirect("/auth/auth");
+            }
+            else
+            {
+                var currentUser = _tools.FindUserByToken(Request);
+                var currentProfile = _db.Profiles.FirstOrDefault(profile => profile.Id == currentUser.UserId);
+                var profileModel = new ProfileModel()
+                {
+                    Email = currentUser.Email,
+                    Nickname = currentUser.Nickname,
+                    Birthday = currentProfile.Birthday,
+                    City = currentProfile.City,
+                    Description = currentProfile.Description,
+                    PhotoPath = currentProfile.PhotoPath
+                };
+                return View(profileModel);
+            }
         }
 
         public JsonResult OnPostEditProfile(

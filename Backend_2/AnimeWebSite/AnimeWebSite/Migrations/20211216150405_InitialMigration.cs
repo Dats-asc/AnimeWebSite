@@ -8,6 +8,24 @@ namespace AnimeWebSite.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AnimeItems",
+                columns: table => new
+                {
+                    ItemId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    Genre = table.Column<string>(type: "text", nullable: true),
+                    Director = table.Column<string>(type: "text", nullable: true),
+                    SeriesCount = table.Column<int>(type: "integer", nullable: false),
+                    PosterPath = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimeItems", x => x.ItemId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -46,6 +64,9 @@ namespace AnimeWebSite.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AnimeItems");
+
             migrationBuilder.DropTable(
                 name: "Profiles");
 

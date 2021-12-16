@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AnimeWebApp;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,26 @@ namespace AnimeWebSite.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+        }
+
+        public JsonResult OnGetAnimeItems()
+        {
+            var items = _db.AnimeItems.ToList();
+            var animteItems = new Dictionary<string, List<AnimeItem>>();
+            animteItems.Add("items", items);
+            
+            var result = JsonSerializer.Serialize<Dictionary<string, List<AnimeItem>>>(animteItems);
+
+            return new JsonResult(result);
+        }
+
+        public JsonResult OnPostDeleteButton(string itemId)
+        {
+            var item = _db.AnimeItems.FirstOrDefault(i => i.ItemId == Guid.Parse(itemId));
+            _db.AnimeItems.Remove(item);
+            _db.SaveChanges();
+
+            return new JsonResult("ok");
         }
     }
 }
